@@ -1,6 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from app import db
+from app.enums import UserTypeEnum, SubscriptionStatusEnum
+from sqlalchemy.dialects.postgresql import ENUM
+from sqlalchemy import Enum as SQLAEnum  
 
 # Create user model
 class User(db.Model):
@@ -10,8 +13,7 @@ class User(db.Model):
   name = db.Column(db.String(100), nullable=False)
   email = db.Column(db.String(150), unique=True, nullable=False)
   password = db.Column(db.String(100), nullable=False)
-  user_type = db.Column(db.Enum('normal_user', 'company_user', name='user_type_enum'), nullable=False)
-  role = db.Column(db.Enum('admin', 'user', name='role_enum'), nullable=True)
+  user_type = db.Column(SQLAEnum(UserTypeEnum), nullable=False)
 
   company_id = db.Column(db.Integer, db.ForeignKey('companies.id'), nullable=True)
   is_active = db.Column(db.Boolean)
@@ -28,8 +30,7 @@ class Company(db.Model):
   email = db.Column(db.String(150), unique=True, nullable=False)
   stripe_customer_id = db.Column(db.String(255))
   is_trial_active = db.Column(db.Boolean)
-  subscription_status = db.Column(
-     db.Enum('trial', 'active', 'expired', 'blocked',name='subscription_status_enum'), nullable=False)
+  subscription_status = db.Column(SQLAEnum(SubscriptionStatusEnum), nullable=False, default=SubscriptionStatusEnum.TRIAL)
   created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
   def __repr__(self):
