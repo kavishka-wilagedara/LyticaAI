@@ -28,6 +28,7 @@ class Company(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(100), nullable=False)
   email = db.Column(db.String(150), unique=True, nullable=False)
+  address = db.Column(db.String(255), nullable=False)
   stripe_customer_id = db.Column(db.String(255))
   is_trial_active = db.Column(db.Boolean)
   subscription_status = db.Column(SQLAEnum(SubscriptionStatusEnum), nullable=False, default=SubscriptionStatusEnum.TRIAL)
@@ -35,5 +36,18 @@ class Company(db.Model):
 
   def __repr__(self):
         return f"<Company {self.name} | {self.subscription_status}>"
+  
+class NormalUsers(db.Model):
+  __tablename__ = 'normal_users'
+
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String(100), nullable=False)
+  email = db.Column(db.String(150), unique=True, nullable=False)
+  stripe_customer_id = db.Column(db.String(255))
+  is_trial_active = db.Column(db.Boolean)
+  subscription_status = db.Column(SQLAEnum(SubscriptionStatusEnum), nullable=False, default=SubscriptionStatusEnum.TRIAL)
+  created_at = db.Column(db.DateTime, default=datetime.utcnow)
+  
+
 
 
